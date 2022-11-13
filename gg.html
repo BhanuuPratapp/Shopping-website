@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+
+
+        <meta charset="UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Forms</title>
+
+
+    </head>
+
+
+<body>
+  <form onsubmit="saveToLocalStorage(event)">
+    <label> Expanse amount </label>
+    <input id="expanseamount" type="text"  name="amount" required/>
+    <label> Choose description </label>
+    <input id="description" type="text"  name="chooseDescription" required/>
+    <label> Choose Category </label>
+    <select name="Languages" id="category">
+      <option value="">--Please choose an category--</option>
+      <option value="Movies" >Movies</option>
+      <option value="Health and Safety">Health and Safety</option>
+      <option value="Gardening">Gardening</option>
+      <option value="Decoration">Decoration</option>
+      <option value="Cleanng#">Cleaning</option>
+    </select>   
+    <button> Submit </button>
+  </form>
+<ul id="listofCategories"></ul>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.1.3/axios.min.js"></script>
+  <script>
+
+   function saveToLocalStorage(event){
+    event.preventDefault();
+   const expanseAmount = event.target.expanseamount.value;
+   const Description = event.target.description.value;
+   const Category = event.target.category.value;
+
+   const obj = {
+     expanseAmount,
+     Description,
+     Category
+   }
+   axios.post("http://localhost:3000/user/add-users",obj)
+                   .then((respons) =>{
+                    showListOfRegistered(respons.data.newUserDetail);
+                       //console.log(response2)
+                   })
+                   .catch((err) => {
+                    document.body.innerHTML = document.body.innerHTML + "<h4>Error: Something Not found</h4>" 
+                   console.log(err)
+                   })
+   //localStorage.setItem(obj.Category,JSON.stringify(obj));
+   //showListOfRegistered(obj)
+
+}
+
+window.addEventListener('DOMContentLoaded',(event) => {
+  
+  axios.get("http://localhost:3000/user/get-users")
+                      .then((response) =>{
+                        console.log(response)
+                        for(i=0;i<response.data.allUsers.length;i++){
+                        showListOfRegistered(response.data.allUsers[i]);
+                      }
+                      })
+
+                      .catch(err => console.log(err))
+   // Object.keys(localStorage).forEach(key => {
+     //   const category = JSON.parse(localStorage.getItem(key));
+        //console.log(JSON.parse(localStorage.getItem(key)))
+       // showListOfRegistered(category); 
+
+})
+
+function showListOfRegistered(categories){
+  
+   document.getElementById('expanseamount').value = '';
+    document.getElementById('description').value = '';
+    document.getElementById('category').value = '';
+    
+    /*
+    if(localStorage.getItem(categories.Category) !== null){
+
+        removeRegistered(categories.Category);
+    }
+    */
+    var parentNode4 = document.getElementById('listofCategories');
+    console.log(categories)
+    console.log(categories.expanseAmount)
+    var childNode4 = `<li id=${categories.id}> ${categories.expenseamount} ${categories.description} ${categories.category} <button onclick = deleteRegistered('${categories.id}')>Delete</button> <button onclick = editRegistered('${categories.expenseamount}','${categories.description}','${categories.id}')>Edit</button> </li>`
+    parentNode4.innerHTML = parentNode4.innerHTML + childNode4;
+}
+
+function editRegistered(expanse1, amount1, category1)
+{
+
+document.getElementById('expanseamount').value = expanse1;
+document.getElementById('description').value = amount1;
+document.getElementById('category').value = category1;
+
+deleteRegistered(category1)
+}
+
+function deleteRegistered(ID){
+  axios.delete(`http://localhost:3000/user/delete-users/${ID}`)
+                      .then((response) =>{
+
+                   
+
+
+                      })
+                      .catch(err => console.log(err))
+                      removeRegistered(ID);
+   // localStorage.removeItem(cate);
+    //removeRegistered(cate);
+}
+
+function removeRegistered(ID){
+
+  var parentNode1 = document.getElementById('listofCategories');
+                    const childNodeToBeDeleted2 = document.getElementById(ID);
+                   // console.log(category2)
+                   // console.log(childNodeToBeDeleted)
+                    if(childNodeToBeDeleted2)
+                    {
+                    parentNode1.removeChild(childNodeToBeDeleted2);
+                    }
+
+}
+
+</script>
+</body>
+</html>
+
+
+
