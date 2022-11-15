@@ -4,7 +4,7 @@ const User = require('../models/foruser');
 exports.postAddUser =  async (req, res, next) =>{
   try{
    const expenseamount  = req.body.expanseAmount;
-  console.log("bhbbj")
+
    const description = req.body.Description;
    const category = req.body.Category;
  

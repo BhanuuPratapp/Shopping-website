@@ -89,9 +89,8 @@ function showListOfRegistered(categories){
     }
     */
     var parentNode4 = document.getElementById('listofCategories');
-    console.log(categories)
-    console.log(categories.expanseAmount)
-    var childNode4 = `<li id=${categories.id}> ${categories.expenseamount} ${categories.description} ${categories.category} <button onclick = deleteRegistered('${categories.id}')>Delete</button> <button onclick = editRegistered('${categories.expenseamount}','${categories.description}','${categories.id}')>Edit</button> </li>`
+  
+    var childNode4 = `<li id=${categories.id}> ${categories.expenseamount} ${categories.description} ${categories.category} <button onclick = deleteRegistered('${categories.id}')>Delete</button> <button onclick = editRegistered('${categories.expenseamount}','${categories.description}','${categories.category}')>Edit</button> </li>`
     parentNode4.innerHTML = parentNode4.innerHTML + childNode4;
 }
 
