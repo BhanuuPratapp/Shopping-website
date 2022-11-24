@@ -1,13 +1,39 @@
 const Product = require('../models/product');
 const Cart = require('../models/cart');
+const ITEMS_PER_PAGE = 3;
+
 
 exports.getProducts = (req, res, next) => {
-  Product.findAll().then(products =>{
-    res.render('shop/product-list', {
+  const page = +req.query.page || 1;
+
+  let totalItems;
+
+  Product.count()
+  .then((total) =>{
+    totalItems = total;
+     return Product.findAll(
+      {
+      offset:((page-1)*ITEMS_PER_PAGE),
+      limit : ITEMS_PER_PAGE,
+      }
+    )
+  })
+  .then(products =>{
+
+    res.json({products,
+      currentPage: page,
+      hasNextPage: ITEMS_PER_PAGE * page < totalItems,
+      nextPage: page + 1,
+      hasPreviousPage: page > 1,
+      previousPage: page - 1,
+      lastPage: Math.ceil(totalItems / ITEMS_PER_PAGE),
+       success: true })
+  /*  res.render('shop/product-list', {
       prods: products,
       pageTitle: 'All Products',
       path: '/products'
     });
+    */
   }).catch(err => console.log(err))
 
 };
@@ -26,9 +52,20 @@ exports.getProduct = (req, res, next) => {
 };
 
 
-
 exports.getIndex = (req, res, next) => {
-  Product.findAll().then(products =>{
+
+  const page = +req.query.page || 1;
+ 
+  Product.findAll(
+  {
+      offset:((page-1)*ITEMS_PER_PAGE),
+      limit : ITEMS_PER_PAGE,
+    
+    }
+  )
+  
+  
+  .then(products =>{
     res.render('shop/index', {
       prods: products,
       pageTitle: 'Shop',
@@ -44,11 +81,14 @@ exports.getCart = (req, res, next) => {
   .then(cart=>{
     //console.log(cart)
     return cart.getProducts().then(products => {
+      res.status(200).json({products: products, success: true})
+      /*
       res.render('shop/cart', {
         path: '/cart',
         pageTitle: 'Your Cart',
         products: products
       });
+      */
     }).catch(err => console.log(err))
   })
   .catch(err => console.log(err))
@@ -75,6 +115,10 @@ exports.getCart = (req, res, next) => {
 
 
 exports.postCart = (req, res, next) => {
+  console.log(req.body.productId)
+  if(!req.body.productId){
+    res.status(400).json({success: false, message: "ProductId is missing"})
+  }
   const prodId = req.body.productId;
   let fetchedCart;
   let newquantity = 1;
@@ -103,9 +147,11 @@ exports.postCart = (req, res, next) => {
 
    })
    .then(() =>{
-    res.redirect('/cart')
+   // res.redirect('/cart')
+   res.status(200).json({success: true, message:"Successfully added the product"})
    })
-   .catch(err => console.log(err))
+   .catch(err =>{ res.status(500).json({success: false, message:"Failing in adding the product"})
+ } )
 };
 
 /*
@@ -125,16 +171,18 @@ exports.postCartDeleteProduct = (req, res, next) => {
     const product = products[0];
     return product.cartItems.destroy()
   }).then(result =>{
+    //res.status(200).json({success: true ,message: "Successfully deleted the product"})
     res.redirect('/cart')
   })
-  .catch(err => console.log(err))
+  .catch(err =>console.log(err))
+
 
  /* Product.findByPk(prodId, product => {
     Cart.deleteProduct(prodId, product.price);
     res.redirect('/cart');
   });
   */
-};
+}
 
 exports.getOrders = (req, res, next) => {
   res.render('shop/orders', {

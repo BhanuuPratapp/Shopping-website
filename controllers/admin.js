@@ -88,13 +88,16 @@ exports.getProducts = (req, res, next) => {
 
 exports.postDeleteProduct = (req, res, next) => {
   const prodId = req.body.productId;
+  console.log("Deleted productID              :",prodId);
   Product.findByPk(prodId).then(product =>{
     return product.destroy();
   })
   .then(result =>{
     console.log("product Destroyed")
-    res.redirect('/admin/products');
+    res.status(200).json({success: true, message:"product destroyed"})
+    //res.redirect('/admin/products');
 
   })
-  .catch(err => console.log(err));
+  .catch(err => {res.status(500).json({success: false, message:"failure in destroying the destroyed"})
+});
 };

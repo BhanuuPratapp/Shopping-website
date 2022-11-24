@@ -19,8 +19,8 @@ const CartItems = require('./models/cart-items')
 const app = express();
 app.use(cors())
 
-app.use(express.json())
-//app.use(express.urlencoded())
+//app.use(express.json())
+app.use(express.urlencoded())
 app.set('view engine', 'ejs');
 app.set('views', 'views');
 
@@ -29,7 +29,9 @@ const shopRoutes = require('./routes/shop');
 const userRoutes = require('./routes/user')
 const expenseusers = require('./routes/forusers')
 
-app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded())
+
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use((req, res, next) => {
