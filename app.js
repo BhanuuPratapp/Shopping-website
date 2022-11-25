@@ -16,6 +16,9 @@ const products = require('./models/product')
 const User = require('./models/user')
 const Cart = require('./models/cart')
 const CartItems = require('./models/cart-items')
+const Order = require('./models/cart-orders');
+const OrderItems =  require('./models/order-items')
+
 const app = express();
 app.use(cors())
 
@@ -35,7 +38,7 @@ app.use(bodyParser.urlencoded())
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use((req, res, next) => {
-  console.log("bhanuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuu")
+  //console.log("bhanuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuu")
   User.findByPk(1)
     .then(user => {
       req.user = user;
@@ -108,6 +111,9 @@ User.hasOne(Cart)
 Cart.belongsTo(User);
 Cart.belongsToMany(products, {through: CartItems});
 products.belongsToMany(Cart, {through: CartItems});
+Order.belongsTo(User);
+User.hasMany(Order);
+Order.belongsToMany(products, {through: OrderItems})
 
 
 sequelize

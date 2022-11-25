@@ -94,10 +94,10 @@ exports.postDeleteProduct = (req, res, next) => {
   })
   .then(result =>{
     console.log("product Destroyed")
-    res.status(200).json({success: true, message:"product destroyed"})
-    //res.redirect('/admin/products');
+   // res.status(200).json({success: true, message:"product destroyed"})
+    res.redirect('/admin/products');
 
   })
-  .catch(err => {res.status(500).json({success: false, message:"failure in destroying the destroyed"})
-});
+  .catch(err => console.log(err))
+
 };

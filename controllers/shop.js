@@ -1,5 +1,6 @@
 const Product = require('../models/product');
 const Cart = require('../models/cart');
+//const CartOrders = require('../models/cart-orders');
 const ITEMS_PER_PAGE = 3;
 
 
@@ -171,10 +172,11 @@ exports.postCartDeleteProduct = (req, res, next) => {
     const product = products[0];
     return product.cartItems.destroy()
   }).then(result =>{
-    //res.status(200).json({success: true ,message: "Successfully deleted the product"})
-    res.redirect('/cart')
+    res.status(200).json({success: true ,message: "Successfully deleted the product"})
+   // res.redirect('/cart')
   })
-  .catch(err =>console.log(err))
+  .catch(err =>{    res.status(500).json({success: false ,message: "Failed in deleting the product from cart"})
+})
 
 
  /* Product.findByPk(prodId, product => {
@@ -184,6 +186,28 @@ exports.postCartDeleteProduct = (req, res, next) => {
   */
 }
 
+exports.postOrders = (req, res, next) => {
+  req.user.getCart()
+  .then(cart =>{
+    return cart.getProducts();
+  })
+  .then(products =>{
+    return req.user.createOrder()
+    .then(order =>{return order.addProducts(
+      products.map(product =>{
+        product.orderItems = {quantity : product.cartItems.quantity }
+        return product;
+      })
+    )
+  })
+  .catch(err => console.log(err))
+  })
+  .then(result => {
+    res.redirect('/orders')
+  })
+  .catch(err => console.log(err))
+
+}
 exports.getOrders = (req, res, next) => {
   res.render('shop/orders', {
     path: '/orders',
