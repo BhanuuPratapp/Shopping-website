@@ -187,8 +187,10 @@ exports.postCartDeleteProduct = (req, res, next) => {
 }
 
 exports.postOrders = (req, res, next) => {
+  let fetchedCart;
   req.user.getCart()
   .then(cart =>{
+    fetchedCart = cart;
     return cart.getProducts();
   })
   .then(products =>{
@@ -203,16 +205,30 @@ exports.postOrders = (req, res, next) => {
   .catch(err => console.log(err))
   })
   .then(result => {
+   return fetchedCart.setProducts(null);
+  })
+  .then(result =>{
     res.redirect('/orders')
+
   })
   .catch(err => console.log(err))
 
 }
 exports.getOrders = (req, res, next) => {
-  res.render('shop/orders', {
-    path: '/orders',
-    pageTitle: 'Your Orders'
-  });
+  req.user.getOrders({include: ['products']})
+  .then(orders =>{
+
+    res.status(200).json({success: true, message: "successfully getting the product details", ordersDetails: orders})
+    /*
+    res.render('shop/orders', {
+      path: '/orders',
+      pageTitle: 'Your Orders',
+      orders: orders
+    });
+    */
+  }).catch(err =>{ res.status(500).json({success: false, message: "failed in getting the product details"})
+})
+  
 };
 
 exports.getCheckout = (req, res, next) => {
