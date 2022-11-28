@@ -208,7 +208,9 @@ exports.postOrders = (req, res, next) => {
    return fetchedCart.setProducts(null);
   })
   .then(result =>{
-    res.redirect('/orders')
+
+    res.status(200).json({success: true, message:"successfully created the order"})
+   // res.redirect('/orders')
 
   })
   .catch(err => console.log(err))

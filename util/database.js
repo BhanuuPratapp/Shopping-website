@@ -9,12 +9,13 @@ const pool = mysql.createPool({
 
 module.exports = pool.promise();
 */
-
 const Sequelize = require('sequelize');
 
-const sequelize = new Sequelize('node-complete', 'root', 'Bhanu@123', {
+console.log(process.env.DB_PASSWORD)
+
+const sequelize = new Sequelize(process.env.DB_NAME, process.env.DB_USERNAME, process.env.DB_PASSWORD, {
   dialect: 'mysql',
-  host: 'localhost'
+  host: process.env.DB_HOST
 });
 
 module.exports = sequelize;

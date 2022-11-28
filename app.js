@@ -3,6 +3,9 @@ const path = require('path');
 var cors = require('cors')
 
 const express = require('express');
+const dotenv  = require('dotenv')
+dotenv.config();
+
 
 const bodyParser = require('body-parser');
 
