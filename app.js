@@ -33,7 +33,7 @@ app.set('views', 'views');
 const adminRoutes = require('./routes/admin');
 const shopRoutes = require('./routes/shop');
 const userRoutes = require('./routes/user')
-const expenseusers = require('./routes/forUsers')
+const expenseusers = require('./routes/forUssers')
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded())
